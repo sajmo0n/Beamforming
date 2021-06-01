@@ -53,6 +53,7 @@ uint16_t Reflection2_time = 0;
 uint16_t Reflection3_time = 0;
 uint16_t TempDelay = 0;
 uint16_t Transmitter_delay = 0;
+uint8_t First_left_transmitter = 1;
 float Distance1 = 0;
 float Distance2 = 0;
 float Distance3 = 0;
@@ -118,30 +119,71 @@ int main(void) {
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1) {
-		if (Transmitter_delay == 0) {
-			HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin, GPIO_PIN_SET);
-			delay_us(10);
-			HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin, GPIO_PIN_RESET);
-		} else {
-			if (Transmitter_delay > 0 && Transmitter_delay <= 10) {
+
+		if (First_left_transmitter == 1) {
+			if (Transmitter_delay == 0) {
 				HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin, GPIO_PIN_SET);
-				delay_us(Transmitter_delay);
 				HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin, GPIO_PIN_SET);
-				delay_us(10 - Transmitter_delay);
+				delay_us(10);
 				HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin, GPIO_PIN_RESET);
-				delay_us(Transmitter_delay);
 				HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin, GPIO_PIN_RESET);
+			} else {
+				if (Transmitter_delay > 0 && Transmitter_delay <= 10) {
+					HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin, GPIO_PIN_SET);
+					delay_us(Transmitter_delay);
+					HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin, GPIO_PIN_SET);
+					delay_us(10 - Transmitter_delay);
+					HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin,
+							GPIO_PIN_RESET);
+					delay_us(Transmitter_delay);
+					HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin,
+							GPIO_PIN_RESET);
+				}
+				if (Transmitter_delay > 10) {
+					HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin, GPIO_PIN_SET);
+					delay_us(10);
+					HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin,
+							GPIO_PIN_RESET);
+					delay_us(Transmitter_delay - 10);
+					HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin, GPIO_PIN_SET);
+					delay_us(10);
+					HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin,
+							GPIO_PIN_RESET);
+				}
+
 			}
-			if (Transmitter_delay > 10) {
+		} else {
+			if (Transmitter_delay == 0) {
+				HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin, GPIO_PIN_SET);
 				HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin, GPIO_PIN_SET);
 				delay_us(10);
-				HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin, GPIO_PIN_RESET);
-				delay_us(Transmitter_delay - 10);
-				HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin, GPIO_PIN_SET);
-				delay_us(10);
 				HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin, GPIO_PIN_RESET);
+			} else {
+				if (Transmitter_delay > 0 && Transmitter_delay <= 10) {
+					HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin, GPIO_PIN_SET);
+					delay_us(Transmitter_delay);
+					HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin, GPIO_PIN_SET);
+					delay_us(10 - Transmitter_delay);
+					HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin,
+							GPIO_PIN_RESET);
+					delay_us(Transmitter_delay);
+					HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin,
+							GPIO_PIN_RESET);
+				}
+				if (Transmitter_delay > 10) {
+					HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin, GPIO_PIN_SET);
+					delay_us(10);
+					HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin,
+							GPIO_PIN_RESET);
+					delay_us(Transmitter_delay - 10);
+					HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin, GPIO_PIN_SET);
+					delay_us(10);
+					HAL_GPIO_WritePin(TRIG1_GPIO_Port, TRIG1_Pin,
+							GPIO_PIN_RESET);
+
+				}
+
 			}
 
 		}
